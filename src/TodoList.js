@@ -4,6 +4,7 @@ import 'antd/dist/antd.css';
 import store from "./store";
 import {getAddItemAction, getDeleteItemAction, getInputChangeAction} from './store/actionCreators'
 import TodoListUi from "./TodoListUi"
+import Axios from "axios";
 
 
 class TodoList extends React.Component {
@@ -13,6 +14,18 @@ class TodoList extends React.Component {
 
         this.state = store.getState();
         store.subscribe(this.handleStoreChange)
+    }
+
+
+    componentDidMount() {
+        Axios.get("http://yzq.com")
+            .then((result)=>{
+                console.log(result)
+            })
+            .catch(()=>{
+
+            })
+
     }
 
     render() {
