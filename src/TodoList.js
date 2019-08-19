@@ -1,21 +1,21 @@
 import * as React from "react";
 import {Input, List, message, Modal} from "antd"; // or 'antd/dist/antd.less'
 import 'antd/dist/antd.css';
-import {INPUT_CHANGED, ADD_ITEM, DELETE_ITEM} from "./store/actionTypes"
 import "./TodoList.css"
 import store from "./store";
+import {getAddItemAction, getDeleteItemAction, getInputChangeAction} from './store/actionCreators'
 
 
 class TodoList extends React.Component {
 
     constructor(props) {
-        super(props)
+        super(props);
 
-        this.handleInputChanged = this.handleInputChanged.bind(this)
+        TodoList.handleInputChanged = TodoList.handleInputChanged.bind(this);
         // console.log(store.getState())
-        this.handleStoreChange = this.handleStoreChange.bind(this)
+        this.handleStoreChange = this.handleStoreChange.bind(this);
 
-        this.state = store.getState()
+        this.state = store.getState();
         store.subscribe(this.handleStoreChange)
         // console.log(this.state)
     }
@@ -27,8 +27,8 @@ class TodoList extends React.Component {
             <div className={"container"}>
                 <Search placeholder={"请输入要新增的内容"} enterButton={"新增"}
                         value={this.state.inputVal}
-                        onChange={this.handleInputChanged}
-                        onSearch={value => this.addItem(value)}
+                        onChange={TodoList.handleInputChanged}
+                        onSearch={value => TodoList.addItem(value)}
                 />
 
 
@@ -52,11 +52,11 @@ class TodoList extends React.Component {
     /*处理删除操作*/
     handleDelete = index => {
 
-        const {confirm} = Modal
+        const {confirm} = Modal;
         confirm({
             title: "是否删除 " + this.state.list[index],
             onOk: () => {
-                this.delete(index)
+                TodoList.delete(index)
 
             }
         })
@@ -65,27 +65,27 @@ class TodoList extends React.Component {
     };
 
     /*执行删除*/
-    delete(index) {
+    static delete(index) {
 
 
-        const action = {
-            type: DELETE_ITEM,
-            value: index
-        }
-        store.dispatch(action)
+        // const action = {
+        //     type: DELETE_ITEM,
+        //     value: index
+        // }
+        store.dispatch(getDeleteItemAction(index))
 
     }
 
     /*输入框数据发生变化*/
-    handleInputChanged(e) {
+    static handleInputChanged(e) {
         const inputContent = e.target.value
 
-        const action = {
-            type: INPUT_CHANGED,
-            value: inputContent
-        }
+        // const action = {
+        //     type: INPUT_CHANGED,
+        //     value: inputContent
+        // }
 
-        store.dispatch(action)
+        store.dispatch(getInputChangeAction(inputContent))
         // this.setState(() => ({
         //     inputVal: inputContent
         // }))
@@ -93,19 +93,19 @@ class TodoList extends React.Component {
     }
 
     /*新增item*/
-    addItem(value) {
+    static addItem(value) {
         if (value === "") {
             message.info("内容不能为空，请检查")
             return
         }
 
-        const action = {
-            type: ADD_ITEM,
-            value: value
-        }
+        // const action = {
+        //     type: ADD_ITEM,
+        //     value: value
+        // }
 
 
-        store.dispatch(action)
+        store.dispatch(getAddItemAction(value))
 
 
         // this.setState((preState) => ({
