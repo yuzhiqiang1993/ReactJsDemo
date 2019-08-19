@@ -1,4 +1,4 @@
-import {INPUT_CHANGED, ADD_ITEM, DELETE_ITEM} from "./actionTypes"
+import {ADD_ITEM, DELETE_ITEM, INPUT_CHANGED} from "./actionTypes"
 
 
 const defaultState = {
@@ -8,6 +8,12 @@ const defaultState = {
     list: []
 };
 
+
+/*
+*
+* reducer可以接收state，但是不能修改state
+* reducer必须是一个纯函数。纯函数指的是，给定固定的输入，就一定会有固定的输出，而且不会有任何副作用
+* */
 export default (state = defaultState, action) => {
 
 
@@ -18,20 +24,22 @@ export default (state = defaultState, action) => {
 
     const newState = JSON.parse(JSON.stringify(state));
 
-    if (type === INPUT_CHANGED) {
+    switch (type) {
+        case INPUT_CHANGED:
+            newState.inputVal = action.value;
+            return newState;
+        case DELETE_ITEM:
+            newState.list.splice(action.value, 1);
+            return newState;
+        case ADD_ITEM:
+            newState.inputVal = "";
+            newState.list.push(value);
+            return newState;
 
-        newState.inputVal = action.value;
-        return newState
-    }
-    if (type === DELETE_ITEM) {
-        newState.list.splice(action.value, 1);
+        default:
 
-        return newState
+            return state
+
     }
-    if (type === ADD_ITEM) {
-        newState.inputVal = "";
-        newState.list.push(value);
-        return newState
-    }
-    return state
+
 }

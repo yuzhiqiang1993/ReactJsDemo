@@ -1,9 +1,10 @@
 import * as React from "react";
-import {Input, List, message, Modal} from "antd"; // or 'antd/dist/antd.less'
+import {message, Modal} from "antd"; // or 'antd/dist/antd.less'
 import 'antd/dist/antd.css';
 import "./TodoList.css"
 import store from "./store";
 import {getAddItemAction, getDeleteItemAction, getInputChangeAction} from './store/actionCreators'
+import TodoListUi from "./TodoListUi"
 
 
 class TodoList extends React.Component {
@@ -21,26 +22,15 @@ class TodoList extends React.Component {
     }
 
     render() {
-        const {Search} = Input;
         return (
+            <TodoListUi
+                inputVal={this.state.inputVal}
+                list={this.state.list}
+                inputChange={TodoList.handleInputChanged}
+                add={value => TodoList.addItem(value)}
+                delete={index => this.handleDelete(index)}
+            />
 
-            <div className={"container"}>
-                <Search placeholder={"请输入要新增的内容"} enterButton={"新增"}
-                        value={this.state.inputVal}
-                        onChange={TodoList.handleInputChanged}
-                        onSearch={value => TodoList.addItem(value)}
-                />
-
-
-                <List className={"list"}
-                      size="small"
-                      bordered
-                      dataSource={this.state.list}
-                      renderItem={(item, index) =>
-                          <List.Item
-                              onClick={this.handleDelete.bind(this, index)}>{index} --- {item}</List.Item>}
-                />
-            </div>
         )
     }
 
@@ -52,12 +42,13 @@ class TodoList extends React.Component {
     /*处理删除操作*/
     handleDelete = index => {
 
+        console.log(`要删除的下标：${index}`)
+
         const {confirm} = Modal;
         confirm({
             title: "是否删除 " + this.state.list[index],
             onOk: () => {
-                TodoList.delete(index)
-
+                TodoList.deleteItem(index)
             }
         })
 
@@ -65,30 +56,17 @@ class TodoList extends React.Component {
     };
 
     /*执行删除*/
-    static delete(index) {
+    static deleteItem(index) {
 
+        console.log(index)
 
-        // const action = {
-        //     type: DELETE_ITEM,
-        //     value: index
-        // }
         store.dispatch(getDeleteItemAction(index))
 
     }
 
     /*输入框数据发生变化*/
     static handleInputChanged(e) {
-        const inputContent = e.target.value
-
-        // const action = {
-        //     type: INPUT_CHANGED,
-        //     value: inputContent
-        // }
-
-        store.dispatch(getInputChangeAction(inputContent))
-        // this.setState(() => ({
-        //     inputVal: inputContent
-        // }))
+        store.dispatch(getInputChangeAction(e.target.value))
 
     }
 
@@ -99,19 +77,9 @@ class TodoList extends React.Component {
             return
         }
 
-        // const action = {
-        //     type: ADD_ITEM,
-        //     value: value
-        // }
-
-
         store.dispatch(getAddItemAction(value))
 
 
-        // this.setState((preState) => ({
-        //     inputVal: "",
-        //     list: [...preState.list, value]
-        // }))
     }
 }
 
